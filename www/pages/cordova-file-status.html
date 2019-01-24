@@ -1,0 +1,174 @@
+<template>
+<div class="page" data-name="cordova_file_status">
+  <div class="navbar">
+    <div class="navbar-inner sliding">
+      <div class="left">
+        <a href="#" class="back link">
+          <i class="icon icon-back"></i>
+          <span class="ios-only">Back</span>
+        </a>
+      </div>
+      <div class="title">Cordova File Status</div>
+      <div class="right">
+        <a href="#" class="link icon-only">
+          <i class="icon f7-icons ios-only">menu</i>
+          <i class="icon material-icons md-only">notifications</i>
+        </a>
+      </div>
+    </div>
+  </div>
+  <div class="page-content">
+    <div class="block-title">CORDOVA FILE</div>
+    <form id="cordova-file-form">
+    <div class="list no-hairlines-md">
+      <ul>
+        <li>
+          <div class="item-content item-input">
+            <div class="item-inner">
+              <div class="item-title item-label">applicationDirectory - assets - (R)</div>
+              <div class="item-input-wrap">
+                <textarea class="resizable" disabled placeholder="null" value="{{cdvfile.applicationDirectory}}"></textarea> 
+              </div>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="item-content item-input">
+            <div class="item-inner">
+              <div class="item-title item-label">applicationStorageDirectory - &#47;data&#47;data&#47;app-id - (R&#47;W)</div>
+              <div class="item-input-wrap">
+                <textarea class="resizable" disabled placeholder="null" value="{{cdvfile.applicationStorageDirectory}}"></textarea> 
+              </div>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="item-content item-input">
+            <div class="item-inner">
+              <div class="item-title item-label">dataDirectory - files - (R&#47;W)</div>
+              <div class="item-input-wrap">
+                <textarea class="resizable" disabled placeholder="null" value="{{cdvfile.dataDirectory}}"></textarea> 
+              </div>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="item-content item-input">
+            <div class="item-inner">
+              <div class="item-title item-label">cacheDirectory - cache - (R&#47;W)</div>
+              <div class="item-input-wrap">
+                <textarea class="resizable" disabled placeholder="null" value="{{cdvfile.cacheDirectory}}"></textarea> 
+              </div>
+            </div>
+          </div>
+        </li>
+         <li>
+          <div class="item-content item-input">
+            <div class="item-inner">
+              <div class="item-title item-label">externalApplicationStorageDirectory - Android&#47;data&#47;app-id - (R&#47;W)</div>
+              <div class="item-input-wrap">
+                <textarea class="resizable" disabled placeholder="null" value="{{cdvfile.externalApplicationStorageDirectory}}"></textarea> 
+              </div>
+            </div>
+          </div>
+        </li>
+         <li>
+          <div class="item-content item-input">
+            <div class="item-inner">
+              <div class="item-title item-label">externalDataDirectory - files-external - (R&#47;W)</div>
+              <div class="item-input-wrap">
+                <textarea class="resizable" disabled placeholder="null" value="{{cdvfile.externalDataDirectory}}"></textarea>
+              </div>
+            </div>
+          </div>
+        </li>
+         <li>
+          <div class="item-content item-input">
+            <div class="item-inner">
+              <div class="item-title item-label">externalCacheDirectory - cache-external - (R&#47;W)</div>
+              <div class="item-input-wrap">
+                <textarea class="resizable" disabled placeholder="null" value="{{cdvfile.externalCacheDirectory}}"></textarea>
+              </div>
+            </div>
+          </div>
+        </li>
+         <li>
+          <div class="item-content item-input">
+            <div class="item-inner">
+              <div class="item-title item-label">externalRootDirectory - sdcard - (R&#47;W)</div>
+              <div class="item-input-wrap">
+                <textarea class="resizable" disabled placeholder="null" value="{{cdvfile.externalRootDirectory}}"></textarea>
+              </div>
+            </div>
+          </div>
+        </li>
+        <!-- IOS and Windows Phone Only
+        <li>
+          <div class="item-content item-input">
+            <div class="item-inner">
+              <div class="item-title item-label">tempDirectory</div>
+              <div class="item-input-wrap">
+                <textarea class="resizable" disabled placeholder="null" value="{{cdvfile.tempDirectory}}" ></textarea>
+              </div>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="item-content item-input">
+            <div class="item-inner">
+              <div class="item-title item-label">syncedDataDirectory</div>
+              <div class="item-input-wrap">
+                <textarea class="resizable" disabled placeholder="null" value="{{cdvfile.syncedDataDirectory}}" ></textarea>
+              </div>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="item-content item-input">
+            <div class="item-inner">
+              <div class="item-title item-label">documentsDirectory</div>
+              <div class="item-input-wrap">
+                <textarea class="resizable" disabled placeholder="null" value="{{cdvfile.documentsDirectory}}"></textarea> 
+              </div>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="item-content item-input">
+            <div class="item-inner">
+              <div class="item-title item-label">sharedDirectory</div>
+              <div class="item-input-wrap">
+                <textarea class="resizable" disabled placeholder="null" value="{{cdvfile.sharedDirectory}}" ></textarea>
+              </div>
+            </div>
+          </div>
+        </li> 
+      -->
+      </ul>
+    </div>
+    <div class="block block-strong">
+      <p class="row">
+        <a href="#" @click="$root.onBackKeyDown()" class="button col button-big button-fill button-raised color-red">Back</a>
+      </p>
+    </div>
+    </form>
+    
+
+    <div class="list">
+      <ul>
+        <li>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+</template>
+<script>
+  return {
+    data: function () {
+      return {
+        // user: JSON.parse(localStorage.user),
+      };
+    },
+  };
+</script>

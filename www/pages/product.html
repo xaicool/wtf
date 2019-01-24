@@ -1,0 +1,138 @@
+<template>
+  <div class="page" data-name="product-view">
+    <div class="navbar">
+      <div class="navbar-inner sliding">
+        <div class="left">
+          <a href="#" class="link back">
+            <i class="icon icon-back"></i>
+            <span class="ios-only">Back</span>
+          </a>
+        </div>
+        <div class="title">LIHAT {{product.iname}}</div>
+      </div>
+    </div>
+
+
+
+    <div class="page-content">
+      <form id="item-form">
+        <div class="list no-hairlines-md">
+          <ul>
+            <input type="hidden" name="uid" placeholder="Your name" value="{{product.iid}}"/>
+            <li>
+              <div class="item-content item-input">
+                <div class="item-inner">
+                  <div class="item-title item-label">Nama Item</div>
+                  <div class="item-input-wrap">
+                    <input type="text" disabled="true" name="fname" placeholder="Your name" value="{{product.iname}}" />
+                  </div>
+                </div>
+              </div>
+            </li>
+            <li>
+              <div class="item-content item-input">
+                <div class="item-inner">
+                  <div class="item-title item-label">Kode Barang</div>
+                  <div class="item-input-wrap">
+                    <input type="text" disabled="true" name="icode" placeholder="Your name" value="{{product.icode}}" />
+                  </div>
+                </div>
+              </div>
+            </li>
+            <li>
+              <a class="item-link smart-select smart-select-init disabled">
+                <select name="catid">
+                  <option value="{{product.catid.id}}" selected>{{product.catid.name}}</option>
+                </select>
+                <div class="item-content">
+                  <div class="item-inner">
+                    <div class="item-title">Kategori</div>
+                  </div>
+                </div>
+              </a>
+            </li>
+            <li>
+              <a class="item-link smart-select smart-select-init disabled">
+                <select name="unitid">
+                  <option value="{{product.unitid.id}}" selected>{{product.unitid.name}}</option>
+                </select>
+                <div class="item-content">
+                  <div class="item-inner">
+                    <div class="item-title">Unit</div>
+                  </div>
+                </div>
+              </a>
+            </li>
+
+            <li>
+              <div class="item-content item-input">
+                <div class="item-inner">
+                  <div class="item-title item-label">Harga Jual Barang</div>
+                  <div class="item-input-wrap">
+                    <input type="number" name="bprice" placeholder="0" value="{{product.bprice}}" />
+                  </div>
+                </div>
+              </div>
+            </li>
+
+
+            <li>
+              <div class="item-content">
+                <div class="item-inner">
+                  <div class="item-title">Status</div>
+                  <div class="item-input">
+                    <label class="toggle toggle-init color-blue">
+                      {{#js_if "this.product.status === 1"}}
+                      <input type="checkbox" disabled="true" name="status" checked>
+                      {{else}}
+                      <input type="checkbox" disabled="true" name="status">
+                      {{/js_if}}
+                      <span class="toggle-icon"></span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </li>
+
+            <li class="align-top">
+              <div class="item-content item-input">
+                <div class="item-inner">
+                  <div class="item-input-wrap">
+                    <textarea placeholder="Deskripsi" disabled="true" name="note" class="resizable" value="{{product.note}}"></textarea>
+                  </div>
+                </div>
+              </div>
+            </li>
+
+          </ul>
+        </div>
+        <div class="block block-strong">
+          <p class="row">
+            <a @click="$root.onBackKeyDown()" href="#" class="button logout-button col button-big button-fill button-raised color-red">Back</a>
+          </p>
+        </div>
+      </form>
+      
+    </div>
+
+
+
+  </div>
+</template>
+<script>
+  return {
+    on: {
+      pageInit: function(e, page) {
+        var self = this;
+        console.log(self.product);
+        
+      },
+      pageBeforeRemove() {
+        var self = this;
+        self.$app.smartSelect.destroy();
+        // self.$app.smartSelect.destroy('#unit');
+        
+      },
+    },
+  }
+</script>

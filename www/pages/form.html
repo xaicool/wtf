@@ -1,0 +1,398 @@
+<template>
+<div class="page" data-name="product-edit">
+  <div class="navbar">
+    <div class="navbar-inner sliding">
+      <div class="left">
+        <a href="#" class="back link">
+          <i class="icon icon-back"></i>
+          <span class="ios-only">Back</span>
+        </a>
+      </div>
+      <div class="title">Edit</div>
+      <div class="right">
+        <a href="#" class="link icon-only">
+          <i class="icon f7-icons ios-only">menu</i>
+          <i class="icon material-icons md-only">notifications</i>
+        </a>
+      </div>
+    </div>
+  </div>
+  <div class="page-content">
+    <!-- <div class="block-title">EDIT</div> -->
+    <!-- <form id="setting-form" action="send-here.html" method="POST" class="form-ajax-submit" enctype="multipart/form-data"> -->
+    <form id="item-form">
+    <div class="list no-hairlines-md">
+      <ul>
+        <input type="hidden" name="uid" placeholder="Your name" value="{{item.iid}}"/>
+        <li>
+          <div class="item-content item-input">
+            <div class="item-inner">
+              <div class="item-title item-label">Nama Item</div>
+              <div class="item-input-wrap">
+                <input type="text" name="fname" placeholder="Your name" value="{{item.iname}}" />
+              </div>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="item-content item-input">
+            <div class="item-inner">
+              <div class="item-title item-label">Kode Barang</div>
+              <div class="item-input-wrap">
+                <input type="text" name="icode" placeholder="Your name" value="{{item.icode}}" />
+              </div>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="item-content item-input">
+            <div class="item-inner">
+              <div class="item-title item-label">Barcode</div>
+              <div class="item-input-wrap">
+                <input type="text" name="barcode" placeholder="Klik untuk menambah Barcode" value="{{item.barcode}}" />
+                <input type="hidden" name="barcodeformat" value="{{item.barcodeformat}}"/>
+              </div>
+            </div>
+          </div>
+        </li>
+        <li>
+          <a class="item-link smart-select category">
+            <select name="catid">
+              {{#categories}}
+              <option value="{{id}}" {{#js_if '../item.catid.id == this.id'}}selected{{else}}{{/js_if}} >{{name}}</option>
+              {{/categories}}
+            </select>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Kategori</div>
+              </div>
+            </div>
+          </a>
+        </li>
+        <li>
+          <a class="item-link smart-select unit">
+            <select name="unitid">
+              {{#units}}
+
+              <option value="{{id}}" {{#js_if '../item.unitid.id == this.id'}}selected{{else}}{{/js_if}} >{{name}}</option>
+              
+              {{/units}}
+            </select>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Unit</div>
+              </div>
+            </div>
+          </a>
+        </li>
+
+        <li>
+          <div class="item-content item-input">
+            <div class="item-inner">
+              <div class="item-title item-label">Harga Beli</div>
+              <div class="item-input-wrap">
+                <input type="number" name="bprice" placeholder="0" value="{{item.bprice}}" />
+              </div>
+            </div>
+          </div>
+        </li>
+
+        <li>
+          <div class="item-content item-input">
+            <div class="item-inner">
+              <div class="item-title item-label">Harga Jual 1</div>
+              <div class="item-input-wrap">
+                <input type="number" name="xsprice" placeholder="0" value="{{item.xsprice}}" />
+              </div>
+            </div>
+          </div>
+        </li>
+
+        <li>
+          <div class="item-content item-input">
+            <div class="item-inner">
+              <div class="item-title item-label">Harga Jual 2</div>
+              <div class="item-input-wrap">
+                <input type="number" name="ysprice" placeholder="0" value="{{item.ysprice}}" />
+              </div>
+            </div>
+          </div>
+        </li>
+
+        <li>
+          <div class="item-content item-input">
+            <div class="item-inner">
+              <div class="item-title item-label">Harga Jual 3</div>
+              <div class="item-input-wrap">
+                <input type="number" name="zsprice" placeholder="0" value="{{item.zsprice}}" />
+              </div>
+            </div>
+          </div>
+        </li>
+
+
+        <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Status</div>
+                <div class="item-input">
+                  <label class="toggle toggle-init color-blue">
+
+                    {{#js_if 'this.item.status > 0'}}
+                    <input type="checkbox" name="status" checked>
+                    {{else}}
+                    <input type="checkbox" name="status">
+                    {{/js_if}}
+              
+                    <span class="toggle-icon"></span>
+                  </label>
+                </div>
+              </div>
+            </div>
+        </li>
+
+        <li class="align-top">
+          <div class="item-content item-input">
+            <div class="item-inner">
+              <div class="item-title item-label">Deskripsi</div>
+              <div class="item-input-wrap">
+                <textarea placeholder="Deskripsi" name="note" class="resizable" value="{{item.note}}"></textarea>
+              </div>
+            </div>
+          </div>
+        </li>
+
+        <!-- <li>
+          <div class="item-content item-input">
+            <div class="item-inner">
+              <div class="item-title item-label">Dibuat</div>
+              <div class="item-input-wrap">
+                <input type="text" name="created" value="{{item.created}}" />
+              </div>
+            </div>
+          </div>
+        </li> -->
+      </ul>
+    </div>
+    <div class="block block-strong">
+      <p class="row">
+        <a @click="$root.formToData('#item-form')">FormToData</a>
+      </p>
+      <p class="row">
+        <a @click="$root.onBackKeyDown()" href="#" class="button logout-button col button-big button-fill button-raised color-red">Back</a>
+      </p>
+    </div>
+    </form>
+  </div>
+</div>
+</template>
+<script>
+  return {
+    //Lifecycle Hooks
+    beforeCreate() {
+      // console.log('componentBeforeCreate', this);
+      var self = this;
+      // console.log('pageInit', e, page);
+      $$('a.smart-select').on('click', function(){
+        // self.$app.dialog.alert('SMART SELECT CLICKED!');
+        console.log('SMART SELECT CLICKED!');
+      });
+      
+    },
+    created() {
+      // console.log('componentCreated', this);
+    },
+    beforeMount() {
+      // console.log('componentBeforeMount', this);
+    },
+    mounted() {
+      // console.log('componentMounted', this);
+    },
+    beforeDestroy() {
+      // console.log('componentBeforeDestroy', this);
+    },
+    destroyed() {
+      // console.log('componentDestroyed', this);
+    },
+    // Component Data
+    data: function () {
+      var categories = [];
+      for (var i = 1; i <= 5; i++) {
+        categories.push({
+          id: i,
+          name: 'Item ' + i,
+          note: 'Subtitle ' + i,
+        });
+      }
+      var units = [];
+      for (var i = 1; i <= 5; i++) {
+        units.push({
+          id: i,
+          name: 'Item ' + i,
+          note: 'Subtitle ' + i,
+        });
+      }
+      return {
+        // user: JSON.parse(localStorage.user),
+
+        categories: categories,
+        units: units,
+      };
+    },
+    // Component Methods
+    methods: {
+
+    },
+    // Page Events
+    on: {
+      init:function(e){
+        console.log(e);
+        console.log('INIT PAGE FORM');
+      },
+      pageMounted: function(e, page) {
+        // console.log('pageMounted', e, page);
+      },
+      pageInit: function(e, page) {
+        var self = this;
+        console.log('pageInit', e, page);
+
+        
+
+        app.request({
+          url: 'http://khojati.id/titip/api/v2/api.php/records/categories',
+          dataType: 'json',
+          method: 'GET',
+          cache: false,
+          crossDomain: true,
+          success: function (data) {
+            app.preloader.hide(); //var app is initialized by now
+
+            self.$setState({
+             categories: data.records
+            });
+          //some-more-logic
+            self.smartSelect = self.$app.smartSelect.create({
+              el: self.$el.find('.category'),
+              closeOnSelect : true,
+              openIn : 'popup',
+              searchbar : true,
+              searchbarPlaceholder : 'Cari Kategori',
+              appendSearchbarNotFound : 'Tidak Ditemukan',
+              
+            });
+          },
+          error: function (xhr, status) {
+          app.preloader.hide(); //var app is initialized by now
+          console.log(xhr);
+          console.log(status);
+          app.dialog.alert('Terjadi kesalahan koneksi', 'Error');
+          }
+        });
+
+
+
+
+        app.request({
+          url: 'http://khojati.id/titip/api/v2/api.php/records/units',
+          dataType: 'json',
+          method: 'GET',
+          cache: false,
+          crossDomain: true,
+          success: function (data) {
+            app.preloader.hide(); //var app is initialized by now
+
+            self.$setState({
+             units: data.records
+            });
+          //some-more-logic
+            self.smartSelect = self.$app.smartSelect.create({
+              el: self.$el.find('.unit'),
+              closeOnSelect : true,
+              openIn : 'sheet',
+              
+            });
+          },
+          error: function (xhr, status) {
+          app.preloader.hide(); //var app is initialized by now
+          console.log(xhr);
+          console.log(status);
+          app.dialog.alert('Terjadi kesalahan koneksi', 'Error');
+          }
+        });
+
+        var inputbar = $$('#item-form [name="icode"]').val();
+
+        // console.log(inputbar);
+
+        $$('#item-form [name="barcode"]').on('click', function () {
+          // console.log(inputbar);
+          var bc = $$('#item-form [name="barcode"]').val();
+          var bcf = $$('#item-form [name="barcodeformat"]').val();
+          cordova.plugins.barcodeScanner.scan(
+            function (result) {
+              setTimeout(function() {
+                resultScan = 'Barcode: ' + result.text + '\n' +'Format: ' + result.format + '\n' +'Cancelled: ' + result.cancelled;
+                toastScan = app.toast.create({text: resultScan, position: 'top', closeTimeout: 1000,});
+                toastScan.open();
+                if(result.cancelled==false){
+                  $$('#item-form [name="barcode"]').val(result.text);
+                  $$('#item-form [name="barcodeformat"]').val(result.format);
+                }else{
+                  $$('#item-form [name="barcode"]').val(bc);
+                  $$('#item-form [name="barcodeformat"]').val(bcf);
+                }
+              }, 0);
+            },
+            function (error) {
+                alert("Scanning failed: " + error);
+                $$('#item-form [name="barcode"]').val(bc);
+                $$('#item-form [name="barcodeformat"]').val(bcf);
+                
+            },
+            {
+                preferFrontCamera : false, // iOS and Android
+                showFlipCameraButton : true, // iOS and Android
+                showTorchButton : true, // iOS and Android
+                torchOn: false, // Android, launch with the torch switched on (if available)
+                saveHistory: true, // Android, save scan history (default false)
+                prompt : "Tempatkan barcode di dalam area", // Android
+                resultDisplayDuration: 1500, // Android, display scanned text for X ms. 0 suppresses it entirely, default 1500
+                formats : "QR_CODE,DATA_MATRIX,,UPC_E,UPC_A,EAN_8,EAN_13,CODE_128,CODE_39,ITF,PDF_417", // default: all but PDF_417 and RSS_EXPANDED
+                //orientation : "", // Android only (portrait|landscape), default unset so it rotates with the device
+                disableAnimations : true, // iOS
+                disableSuccessBeep: true // iOS and Android
+            }
+         );
+
+        });
+
+
+
+
+        // $$('a.smart-select').on('click', function(){
+        //   // self.$app.dialog.alert('SMART SELECT CLICKED!');
+        //   console.log('SMART SELECT CLICKED!');
+        // });
+      },
+      pageBeforeIn: function(e, page) {
+        // console.log('pageBeforeIn', e, page);
+      },
+      pageAfterIn: function(e, page) {
+        // console.log('pageAfterIn', e, page);
+      },
+      pageBeforeOut: function(e, page) {
+        // console.log('pageBeforeOut', e, page);
+      },
+      pageAfterOut: function(e, page) {
+        // console.log('pageAfterOut', e, page);
+      },
+      pageBeforeRemove: function(e, page) {
+        var self = this;
+        // self.$app.smartSelect.destroy('#category');
+        // self.$app.smartSelect.destroy('#unit');
+        self.$app.smartSelect.destroy();
+        // console.log('pageBeforeRemove', e, page);
+      },
+    }
+  };
+</script>
