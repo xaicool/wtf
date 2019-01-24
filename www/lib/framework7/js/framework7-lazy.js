@@ -1,20 +1,20 @@
 /**
- * Framework7 3.6.0
+ * Framework7 3.6.5
  * Full featured mobile HTML framework for building iOS & Android apps
  * http://framework7.io/
  *
- * Copyright 2014-2018 Vladimir Kharlampidi
+ * Copyright 2014-2019 Vladimir Kharlampidi
  *
  * Released under the MIT License
  *
- * Released on: December 7, 2018
+ * Released on: January 4, 2019
  */
 
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
   typeof define === 'function' && define.amd ? define(factory) :
-  (global.Framework7 = factory());
-}(this, (function () { 'use strict';
+  (global = global || self, global.Framework7 = factory());
+}(this, function () { 'use strict';
 
   /**
    * Template7 1.4.0
@@ -3632,7 +3632,7 @@
     return {
       positionSticky: positionSticky,
       touch: (function checkTouch() {
-        return !!(('ontouchstart' in win) || (win.DocumentTouch && doc instanceof win.DocumentTouch));
+        return !!((win.navigator.maxTouchPoints > 0) || ('ontouchstart' in win) || (win.DocumentTouch && doc instanceof win.DocumentTouch));
       }()),
 
       pointerEvents: !!(win.navigator.pointerEnabled || win.PointerEvent || ('maxTouchPoints' in win.navigator)),
@@ -4502,6 +4502,10 @@
             e.preventDefault();
           }
         }
+        if (params.activeState) { removeActive(); }
+        if (useRipple) {
+          rippleTouchEnd();
+        }
         return true;
       }
 
@@ -4519,6 +4523,9 @@
 
       if ((touchEndTime - lastClickTime) < params.fastClicksDelayBetweenClicks) {
         setTimeout(removeActive, 0);
+        if (useRipple) {
+          rippleTouchEnd();
+        }
         return true;
       }
 
@@ -5778,8 +5785,15 @@
     leaveCurrentRoute();
   }
 
+  function appRouterCheck (router, method) {
+    if (!router.view) {
+      throw new Error(("Framework7: it is not allowed to use router methods on global app router. Use router methods only on related View, e.g. app.views.main.router." + method + "(...)"));
+    }
+  }
+
   function refreshPage() {
     var router = this;
+    appRouterCheck(router, 'refreshPage');
     return router.navigate(router.currentRoute.url, {
       ignoreCache: true,
       reloadCurrent: true,
@@ -6363,12 +6377,7 @@
       throw new Error(("Framework7: can't construct URL for route with name \"" + name + "\""));
     }
     var app = router.app;
-    if (!router.view) {
-      if (app.views.main) {
-        app.views.main.router.navigate(url, navigateOptions);
-      }
-      return router;
-    }
+    appRouterCheck(router, 'navigate');
     if (url === '#' || url === '') {
       return router;
     }
@@ -7329,10 +7338,9 @@
     return router;
   }
   function back() {
-    var ref;
-
     var args = [], len = arguments.length;
     while ( len-- ) args[ len ] = arguments[ len ];
+
     var router = this;
     if (router.swipeBackActive) { return router; }
     var navigateUrl;
@@ -7366,10 +7374,7 @@
     }
 
     var app = router.app;
-    if (!router.view) {
-      (ref = app.views.main.router).back.apply(ref, args);
-      return router;
-    }
+    appRouterCheck(router, 'back');
 
     var currentRouteIsModal = router.currentRoute.modal;
     var modalType;
@@ -7580,6 +7585,7 @@
 
   function clearPreviousPages() {
     var router = this;
+    appRouterCheck(router, 'clearPreviousPages');
     var app = router.app;
     var separateNavbar = router.separateNavbar;
 
@@ -7610,6 +7616,7 @@
 
   function clearPreviousHistory() {
     var router = this;
+    appRouterCheck(router, 'clearPreviousHistory');
     var url = router.history[router.history.length - 1];
 
     router.clearPreviousPages();
@@ -8771,6 +8778,7 @@
 
     Router.prototype.updateCurrentUrl = function updateCurrentUrl (newUrl) {
       var router = this;
+      appRouterCheck(router, 'updateCurrentUrl');
       // Update history
       if (router.history.length) {
         router.history[router.history.length - 1] = newUrl;
@@ -9211,17 +9219,17 @@
 
   function initClicks(app) {
     function handleClicks(e) {
-      var clicked = $(e.target);
-      var clickedLink = clicked.closest('a');
-      var isLink = clickedLink.length > 0;
-      var url = isLink && clickedLink.attr('href');
-      var isTabLink = isLink && clickedLink.hasClass('tab-link') && (clickedLink.attr('data-tab') || (url && url.indexOf('#') === 0));
+      var $clickedEl = $(e.target);
+      var $clickedLinkEl = $clickedEl.closest('a');
+      var isLink = $clickedLinkEl.length > 0;
+      var url = isLink && $clickedLinkEl.attr('href');
+      var isTabLink = isLink && $clickedLinkEl.hasClass('tab-link') && ($clickedLinkEl.attr('data-tab') || (url && url.indexOf('#') === 0));
 
       // Check if link is external
       if (isLink) {
         // eslint-disable-next-line
-        if (clickedLink.is(app.params.clicks.externalLinks) || (url && url.indexOf('javascript:') >= 0)) {
-          var target = clickedLink.attr('target');
+        if ($clickedLinkEl.is(app.params.clicks.externalLinks) || (url && url.indexOf('javascript:') >= 0)) {
+          var target = $clickedLinkEl.attr('target');
           if (
             url
             && win.cordova
@@ -9240,7 +9248,7 @@
         var moduleClicks = app.modules[moduleName].clicks;
         if (!moduleClicks) { return; }
         Object.keys(moduleClicks).forEach(function (clickSelector) {
-          var matchingClickedElement = clicked.closest(clickSelector).eq(0);
+          var matchingClickedElement = $clickedEl.closest(clickSelector).eq(0);
           if (matchingClickedElement.length > 0) {
             moduleClicks[clickSelector].call(app, matchingClickedElement, matchingClickedElement.dataset());
           }
@@ -9251,16 +9259,16 @@
       var clickedLinkData = {};
       if (isLink) {
         e.preventDefault();
-        clickedLinkData = clickedLink.dataset();
+        clickedLinkData = $clickedLinkEl.dataset();
       }
       var validUrl = url && url.length > 0 && url !== '#' && !isTabLink;
-      if (validUrl || clickedLink.hasClass('back')) {
+      if (validUrl || $clickedLinkEl.hasClass('back')) {
         var view;
         if (clickedLinkData.view) {
           view = $(clickedLinkData.view)[0].f7View;
         } else {
-          view = clicked.parents('.view')[0] && clicked.parents('.view')[0].f7View;
-          if (!clickedLink.hasClass('back') && view && view.params.linksView) {
+          view = $clickedEl.parents('.view')[0] && $clickedEl.parents('.view')[0].f7View;
+          if (!$clickedLinkEl.hasClass('back') && view && view.params.linksView) {
             if (typeof view.params.linksView === 'string') { view = $(view.params.linksView)[0].f7View; }
             else if (view.params.linksView instanceof View) { view = view.params.linksView; }
           }
@@ -9276,7 +9284,10 @@
             // something wrong there
           }
         }
-        if (clickedLink.hasClass('back')) { view.router.back(url, clickedLinkData); }
+        if ($clickedLinkEl[0].f7RouteProps) {
+          clickedLinkData.props = $clickedLinkEl[0].f7RouteProps;
+        }
+        if ($clickedLinkEl.hasClass('back')) { view.router.back(url, clickedLinkData); }
         else { view.router.navigate(url, clickedLinkData); }
       }
     }
@@ -12127,4 +12138,4 @@
 
   return Framework7;
 
-})));
+}));

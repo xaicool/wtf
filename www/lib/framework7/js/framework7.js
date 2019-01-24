@@ -1,20 +1,20 @@
 /**
- * Framework7 3.6.0
+ * Framework7 3.6.5
  * Full featured mobile HTML framework for building iOS & Android apps
  * http://framework7.io/
  *
- * Copyright 2014-2018 Vladimir Kharlampidi
+ * Copyright 2014-2019 Vladimir Kharlampidi
  *
  * Released under the MIT License
  *
- * Released on: December 7, 2018
+ * Released on: January 4, 2019
  */
 
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
   typeof define === 'function' && define.amd ? define(factory) :
-  (global.Framework7 = factory());
-}(this, (function () { 'use strict';
+  (global = global || self, global.Framework7 = factory());
+}(this, function () { 'use strict';
 
   /**
    * Template7 1.4.0
@@ -3632,7 +3632,7 @@
     return {
       positionSticky: positionSticky,
       touch: (function checkTouch() {
-        return !!(('ontouchstart' in win) || (win.DocumentTouch && doc instanceof win.DocumentTouch));
+        return !!((win.navigator.maxTouchPoints > 0) || ('ontouchstart' in win) || (win.DocumentTouch && doc instanceof win.DocumentTouch));
       }()),
 
       pointerEvents: !!(win.navigator.pointerEnabled || win.PointerEvent || ('maxTouchPoints' in win.navigator)),
@@ -4502,6 +4502,10 @@
             e.preventDefault();
           }
         }
+        if (params.activeState) { removeActive(); }
+        if (useRipple) {
+          rippleTouchEnd();
+        }
         return true;
       }
 
@@ -4519,6 +4523,9 @@
 
       if ((touchEndTime - lastClickTime) < params.fastClicksDelayBetweenClicks) {
         setTimeout(removeActive, 0);
+        if (useRipple) {
+          rippleTouchEnd();
+        }
         return true;
       }
 
@@ -5778,8 +5785,15 @@
     leaveCurrentRoute();
   }
 
+  function appRouterCheck (router, method) {
+    if (!router.view) {
+      throw new Error(("Framework7: it is not allowed to use router methods on global app router. Use router methods only on related View, e.g. app.views.main.router." + method + "(...)"));
+    }
+  }
+
   function refreshPage() {
     var router = this;
+    appRouterCheck(router, 'refreshPage');
     return router.navigate(router.currentRoute.url, {
       ignoreCache: true,
       reloadCurrent: true,
@@ -6363,12 +6377,7 @@
       throw new Error(("Framework7: can't construct URL for route with name \"" + name + "\""));
     }
     var app = router.app;
-    if (!router.view) {
-      if (app.views.main) {
-        app.views.main.router.navigate(url, navigateOptions);
-      }
-      return router;
-    }
+    appRouterCheck(router, 'navigate');
     if (url === '#' || url === '') {
       return router;
     }
@@ -7329,10 +7338,9 @@
     return router;
   }
   function back() {
-    var ref;
-
     var args = [], len = arguments.length;
     while ( len-- ) args[ len ] = arguments[ len ];
+
     var router = this;
     if (router.swipeBackActive) { return router; }
     var navigateUrl;
@@ -7366,10 +7374,7 @@
     }
 
     var app = router.app;
-    if (!router.view) {
-      (ref = app.views.main.router).back.apply(ref, args);
-      return router;
-    }
+    appRouterCheck(router, 'back');
 
     var currentRouteIsModal = router.currentRoute.modal;
     var modalType;
@@ -7580,6 +7585,7 @@
 
   function clearPreviousPages() {
     var router = this;
+    appRouterCheck(router, 'clearPreviousPages');
     var app = router.app;
     var separateNavbar = router.separateNavbar;
 
@@ -7610,6 +7616,7 @@
 
   function clearPreviousHistory() {
     var router = this;
+    appRouterCheck(router, 'clearPreviousHistory');
     var url = router.history[router.history.length - 1];
 
     router.clearPreviousPages();
@@ -8771,6 +8778,7 @@
 
     Router.prototype.updateCurrentUrl = function updateCurrentUrl (newUrl) {
       var router = this;
+      appRouterCheck(router, 'updateCurrentUrl');
       // Update history
       if (router.history.length) {
         router.history[router.history.length - 1] = newUrl;
@@ -9211,17 +9219,17 @@
 
   function initClicks(app) {
     function handleClicks(e) {
-      var clicked = $(e.target);
-      var clickedLink = clicked.closest('a');
-      var isLink = clickedLink.length > 0;
-      var url = isLink && clickedLink.attr('href');
-      var isTabLink = isLink && clickedLink.hasClass('tab-link') && (clickedLink.attr('data-tab') || (url && url.indexOf('#') === 0));
+      var $clickedEl = $(e.target);
+      var $clickedLinkEl = $clickedEl.closest('a');
+      var isLink = $clickedLinkEl.length > 0;
+      var url = isLink && $clickedLinkEl.attr('href');
+      var isTabLink = isLink && $clickedLinkEl.hasClass('tab-link') && ($clickedLinkEl.attr('data-tab') || (url && url.indexOf('#') === 0));
 
       // Check if link is external
       if (isLink) {
         // eslint-disable-next-line
-        if (clickedLink.is(app.params.clicks.externalLinks) || (url && url.indexOf('javascript:') >= 0)) {
-          var target = clickedLink.attr('target');
+        if ($clickedLinkEl.is(app.params.clicks.externalLinks) || (url && url.indexOf('javascript:') >= 0)) {
+          var target = $clickedLinkEl.attr('target');
           if (
             url
             && win.cordova
@@ -9240,7 +9248,7 @@
         var moduleClicks = app.modules[moduleName].clicks;
         if (!moduleClicks) { return; }
         Object.keys(moduleClicks).forEach(function (clickSelector) {
-          var matchingClickedElement = clicked.closest(clickSelector).eq(0);
+          var matchingClickedElement = $clickedEl.closest(clickSelector).eq(0);
           if (matchingClickedElement.length > 0) {
             moduleClicks[clickSelector].call(app, matchingClickedElement, matchingClickedElement.dataset());
           }
@@ -9251,16 +9259,16 @@
       var clickedLinkData = {};
       if (isLink) {
         e.preventDefault();
-        clickedLinkData = clickedLink.dataset();
+        clickedLinkData = $clickedLinkEl.dataset();
       }
       var validUrl = url && url.length > 0 && url !== '#' && !isTabLink;
-      if (validUrl || clickedLink.hasClass('back')) {
+      if (validUrl || $clickedLinkEl.hasClass('back')) {
         var view;
         if (clickedLinkData.view) {
           view = $(clickedLinkData.view)[0].f7View;
         } else {
-          view = clicked.parents('.view')[0] && clicked.parents('.view')[0].f7View;
-          if (!clickedLink.hasClass('back') && view && view.params.linksView) {
+          view = $clickedEl.parents('.view')[0] && $clickedEl.parents('.view')[0].f7View;
+          if (!$clickedLinkEl.hasClass('back') && view && view.params.linksView) {
             if (typeof view.params.linksView === 'string') { view = $(view.params.linksView)[0].f7View; }
             else if (view.params.linksView instanceof View) { view = view.params.linksView; }
           }
@@ -9276,7 +9284,10 @@
             // something wrong there
           }
         }
-        if (clickedLink.hasClass('back')) { view.router.back(url, clickedLinkData); }
+        if ($clickedLinkEl[0].f7RouteProps) {
+          clickedLinkData.props = $clickedLinkEl[0].f7RouteProps;
+        }
+        if ($clickedLinkEl.hasClass('back')) { view.router.back(url, clickedLinkData); }
         else { view.router.navigate(url, clickedLinkData); }
       }
     }
@@ -12359,13 +12370,15 @@
             var title = args[1];
             var callbackOk = args[2];
             var callbackCancel = args[3];
+            var defaultValue = args[4];
             if (typeof args[1] === 'function') {
-              (assign = args, text = assign[0], callbackOk = assign[1], callbackCancel = assign[2], title = assign[3]);
+              (assign = args, text = assign[0], callbackOk = assign[1], callbackCancel = assign[2], defaultValue = assign[3], title = assign[4]);
             }
+            defaultValue = typeof defaultValue === 'undefined' ? '' : defaultValue;
             return new Dialog(app, {
               title: typeof title === 'undefined' ? defaultDialogTitle() : title,
               text: text,
-              content: '<div class="dialog-input-field item-input"><div class="item-input-wrap"><input type="text" class="dialog-input"></div></div>',
+              content: ("<div class=\"dialog-input-field item-input\"><div class=\"item-input-wrap\"><input type=\"text\" value=\"" + defaultValue + "\" class=\"dialog-input\"></div></div>"),
               buttons: [
                 {
                   text: app.params.dialog.buttonCancel,
@@ -13022,7 +13035,7 @@
     params: {
       popover: {
         closeByBackdropClick: true,
-        closeByOutsideClick: false,
+        closeByOutsideClick: true,
         backdrop: true,
       },
     },
@@ -15947,14 +15960,14 @@
       // Remove active class from old tabs
       var $oldTabEl = $tabsEl.children('.tab-active');
       $oldTabEl.removeClass('tab-active');
-      if (!swiper || (swiper && !swiper.animating)) {
+      if (!swiper || (swiper && !swiper.animating) || (swiper && tabRoute)) {
         $oldTabEl.trigger('tab:hide');
         app.emit('tabHide', $oldTabEl[0]);
       }
 
       // Trigger 'show' event on new tab
       $newTabEl.addClass('tab-active');
-      if (!swiper || (swiper && !swiper.animating)) {
+      if (!swiper || (swiper && !swiper.animating) || (swiper && tabRoute)) {
         $newTabEl.trigger('tab:show');
         app.emit('tabShow', $newTabEl[0]);
       }
@@ -17788,6 +17801,7 @@
       Framework7Class$$1.call(this, params, [app]);
 
       var range = this;
+
       var defaults = {
         el: null,
         inputEl: null,
@@ -17798,6 +17812,7 @@
         max: 100,
         value: 0,
         draggableBar: true,
+        formatLabel: null,
       };
 
       // Extend defaults with modules params
@@ -18137,7 +18152,7 @@
           if (realLeft < 0) { leftPos = knobWidth / 2; }
           if ((realLeft + knobWidth) > rangeWidth) { leftPos = rangeWidth - (knobWidth / 2); }
           $knobEl.css(positionProperty, (leftPos + "px"));
-          if (label) { labels[knobIndex].text(value[knobIndex]); }
+          if (label) { labels[knobIndex].text(range.formatLabel(value[knobIndex], labels[knobIndex][0])); }
         });
       } else {
         var progress$1 = ((value - min) / (max - min));
@@ -18148,7 +18163,7 @@
         if (realLeft < 0) { leftPos = knobWidth / 2; }
         if ((realLeft + knobWidth) > rangeWidth) { leftPos = rangeWidth - (knobWidth / 2); }
         knobs[0].css(positionProperty, (leftPos + "px"));
-        if (label) { labels[0].text(value); }
+        if (label) { labels[0].text(range.formatLabel(value, labels[0][0])); }
       }
       if ((range.dual && value.indexOf(min) >= 0) || (!range.dual && value === min)) {
         range.$el.addClass('range-slider-min');
@@ -18217,6 +18232,12 @@
 
     Range.prototype.getValue = function getValue () {
       return this.value;
+    };
+
+    Range.prototype.formatLabel = function formatLabel (value, labelEl) {
+      var range = this;
+      if (range.params.formatLabel) { return range.params.formatLabel.call(range, value, labelEl); }
+      return value;
     };
 
     Range.prototype.init = function init () {
@@ -25166,7 +25187,7 @@
     var slideSize;
     var slidesPerColumn = params.slidesPerColumn;
     var slidesPerRow = slidesNumberEvenToRows / slidesPerColumn;
-    var numFullColumns = slidesPerRow - ((params.slidesPerColumn * slidesPerRow) - slidesLength);
+    var numFullColumns = Math.floor(slidesLength / params.slidesPerColumn);
     for (var i = 0; i < slidesLength; i += 1) {
       slideSize = 0;
       var slide = slides.eq(i);
@@ -25225,13 +25246,29 @@
         } else {
           // eslint-disable-next-line
           if (swiper.isHorizontal()) {
-            slideSize = parseFloat(slideStyles.getPropertyValue('width'))
-              + parseFloat(slideStyles.getPropertyValue('margin-left'))
-              + parseFloat(slideStyles.getPropertyValue('margin-right'));
+            var width = parseFloat(slideStyles.getPropertyValue('width'));
+            var paddingLeft = parseFloat(slideStyles.getPropertyValue('padding-left'));
+            var paddingRight = parseFloat(slideStyles.getPropertyValue('padding-right'));
+            var marginLeft = parseFloat(slideStyles.getPropertyValue('margin-left'));
+            var marginRight = parseFloat(slideStyles.getPropertyValue('margin-right'));
+            var boxSizing = slideStyles.getPropertyValue('box-sizing');
+            if (boxSizing && boxSizing === 'border-box') {
+              slideSize = width + marginLeft + marginRight;
+            } else {
+              slideSize = width + paddingLeft + paddingRight + marginLeft + marginRight;
+            }
           } else {
-            slideSize = parseFloat(slideStyles.getPropertyValue('height'))
-              + parseFloat(slideStyles.getPropertyValue('margin-top'))
-              + parseFloat(slideStyles.getPropertyValue('margin-bottom'));
+            var height = parseFloat(slideStyles.getPropertyValue('height'));
+            var paddingTop = parseFloat(slideStyles.getPropertyValue('padding-top'));
+            var paddingBottom = parseFloat(slideStyles.getPropertyValue('padding-bottom'));
+            var marginTop = parseFloat(slideStyles.getPropertyValue('margin-top'));
+            var marginBottom = parseFloat(slideStyles.getPropertyValue('margin-bottom'));
+            var boxSizing$1 = slideStyles.getPropertyValue('box-sizing');
+            if (boxSizing$1 && boxSizing$1 === 'border-box') {
+              slideSize = height + marginTop + marginBottom;
+            } else {
+              slideSize = height + paddingTop + paddingBottom + marginTop + marginBottom;
+            }
           }
         }
         if (currentTransform) {
@@ -26178,7 +26215,7 @@
     var $wrapperEl = swiper.$wrapperEl;
     var params = swiper.params;
     var slides = swiper.slides;
-    $wrapperEl.children(("." + (params.slideClass) + "." + (params.slideDuplicateClass))).remove();
+    $wrapperEl.children(("." + (params.slideClass) + "." + (params.slideDuplicateClass) + ",." + (params.slideClass) + "." + (params.slideBlankClass))).remove();
     slides.removeAttr('data-swiper-slide-index');
   }
 
@@ -27986,7 +28023,7 @@
         }
       }
       // Observe container
-      swiper.observer.attach(swiper.$el[0], { childList: false });
+      swiper.observer.attach(swiper.$el[0], { childList: swiper.params.observeSlideChildren });
 
       // Observe wrapper
       swiper.observer.attach(swiper.$wrapperEl[0], { attributes: false });
@@ -28005,6 +28042,7 @@
     params: {
       observer: false,
       observeParents: false,
+      observeSlideChildren: false,
     },
     create: function create() {
       var swiper = this;
@@ -29223,7 +29261,7 @@
       }
       if (!gesture.$imageEl || gesture.$imageEl.length === 0) { return; }
       if (Support.gestures) {
-        swiper.zoom.scale = e.scale * zoom.currentScale;
+        zoom.scale = e.scale * zoom.currentScale;
       } else {
         zoom.scale = (gesture.scaleMove / gesture.scaleStart) * zoom.currentScale;
       }
@@ -29410,12 +29448,13 @@
       if (gesture.$slideEl && swiper.previousIndex !== swiper.activeIndex) {
         gesture.$imageEl.transform('translate3d(0,0,0) scale(1)');
         gesture.$imageWrapEl.transform('translate3d(0,0,0)');
-        gesture.$slideEl = undefined;
-        gesture.$imageEl = undefined;
-        gesture.$imageWrapEl = undefined;
 
         zoom.scale = 1;
         zoom.currentScale = 1;
+
+        gesture.$slideEl = undefined;
+        gesture.$imageEl = undefined;
+        gesture.$imageWrapEl = undefined;
       }
     },
     // Toggle Zoom
@@ -29638,11 +29677,27 @@
           prevTime: undefined,
         },
       };
+
       ('onGestureStart onGestureChange onGestureEnd onTouchStart onTouchMove onTouchEnd onTransitionEnd toggle enable disable in out').split(' ').forEach(function (methodName) {
         zoom[methodName] = Zoom[methodName].bind(swiper);
       });
       Utils.extend(swiper, {
         zoom: zoom,
+      });
+
+      var scale = 1;
+      Object.defineProperty(swiper.zoom, 'scale', {
+        get: function get() {
+          return scale;
+        },
+        set: function set(value) {
+          if (scale !== value) {
+            var imageEl = swiper.zoom.gesture.$imageEl ? swiper.zoom.gesture.$imageEl[0] : undefined;
+            var slideEl = swiper.zoom.gesture.$slideEl ? swiper.zoom.gesture.$slideEl[0] : undefined;
+            swiper.emit('zoomChange', value, imageEl, slideEl);
+          }
+          scale = value;
+        },
       });
     },
     on: {
@@ -34089,4 +34144,4 @@
 
   return Framework7;
 
-})));
+}));
