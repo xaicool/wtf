@@ -13,9 +13,9 @@ var statusQR;
 // Framework7 App main instance
 var app  = new Framework7({
   root: '#app', // App root element
-  id: 'com.mbutgae.omega.inv', // App bundle ID
-  version: '1.0.22',
-  name: 'Omega POS Inventory', // App name
+  id: 'com.mbutgae.xaicool.modoc', // App bundle ID
+  version: '1.0.o',
+  name: 'Modoc', // App name
   theme: theme, // Automatic theme detection
   pushState: true, //backButton
  //  view: {
