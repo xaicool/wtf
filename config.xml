@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='utf-8'?>
 <widget id="com.mbutgae.omega.inv" version="1.0.22" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>Omega Invento</name>
+    <name>MODOC</name>
     <description>
-        Omega Point Of Sale and Inventory Management System
+        Mobile Dinings O Cafe 
     </description>
     <author email="mbutgaecorp@gmail.com" href="https://gardenexoteak.com">
         Mbutgae Developer
