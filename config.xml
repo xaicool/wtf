@@ -27,33 +27,37 @@
         <preference name="android-maxSdkVersion" value="28" />
         <preference name="android-targetSdkVersion" value="20" />
         <preference name="android-installLocation" value="auto" />
-        <icon qualifier="ldpi" src="res/icons/android/drawable-ldpi-icon.png" />
-        <icon qualifier="mdpi" src="res/icons/android/drawable-mdpi-icon.png" />
-        <icon qualifier="hdpi" src="res/icons/android/drawable-hdpi-icon.png" />
-        <icon qualifier="xhdpi" src="res/icons/android/drawable-xhdpi-icon.png" />
-        <icon qualifier="xxhdpi" src="res/icons/android/drawable-xxhdpi-icon.png" />
-        <icon qualifier="xxxhdpi" src="res/icons/android/drawable-xxxhdpi-icon.png" />
+        <icon density="ldpi" src="res/mo-icon/res/icon/android/ldpi.png"/>
+        <icon density="mdpi" src="res/mo-icon/res/icon/android/mdpi.png"/>
+        <icon density="hdpi" src="res/mo-icon/res/icon/android/hdpi.png"/>
+        <icon density="xhdpi" src="res/mo-icon/res/icon/android/xhdpi.png"/>
+        <icon density="xxhdpi" src="res/mo-icon/res/icon/android/xxhdpi.png"/>
+        <icon density="xxxhdpi" src="res/mo-icon/res/icon/android/xxxhdpi.png"/>
     </platform>
     <platform name="ios">
         <allow-intent href="itms:*" />
         <allow-intent href="itms-apps:*" />
         <preference name="BackupWebStorage" value="none" />
-        <icon height="57" platform="ios" src="res/icons/ios/icon.png" width="57" />
-        <icon height="114" platform="ios" src="res/icons/ios/icon@2x.png" width="114" />
-        <icon height="40" platform="ios" src="res/icons/ios/icon-40.png" width="40" />
-        <icon height="80" platform="ios" src="res/icons/ios/icon-40@2x.png" width="80" />
-        <icon height="50" platform="ios" src="res/icons/ios/icon-50.png" width="50" />
-        <icon height="100" platform="ios" src="res/icons/ios/icon-50@2x.png" width="100" />
-        <icon height="60" platform="ios" src="res/icons/ios/icon-60.png" width="60" />
-        <icon height="120" platform="ios" src="res/icons/ios/icon-60@2x.png" width="120" />
-        <icon height="180" platform="ios" src="res/icons/ios/icon-60@3x.png" width="180" />
-        <icon height="72" platform="ios" src="res/icons/ios/icon-72.png" width="72" />
-        <icon height="144" platform="ios" src="res/icons/ios/icon-72@2x.png" width="144" />
-        <icon height="76" platform="ios" src="res/icons/ios/icon-76.png" width="76" />
-        <icon height="152" platform="ios" src="res/icons/ios/icon-76@2x.png" width="152" />
-        <icon height="29" platform="ios" src="res/icons/ios/icon-small.png" width="29" />
-        <icon height="58" platform="ios" src="res/icons/ios/icon-small@2x.png" width="58" />
-        <icon height="87" platform="ios" src="res/icons/ios/icon-small@3x.png" width="87" />
+        <icon src="res/mo-icon/res/icon/ios/icon-1024.png" width="1024" height="1024"/>
+        <icon src="res/mo-icon/res/icon/ios/icon-small.png" width="29" height="29"/>
+        <icon src="res/mo-icon/res/icon/ios/icon-small@2x.png" width="58" height="58"/>
+        <icon src="res/mo-icon/res/icon/ios/icon-small@3x.png" width="87" height="87"/>
+        <icon src="res/mo-icon/res/icon/ios/icon-small-40.png" width="40" height="40"/>
+        <icon src="res/mo-icon/res/icon/ios/icon-small-40@2x.png" width="80" height="80"/>
+        <icon src="res/mo-icon/res/icon/ios/icon-small-40@3x.png" width="120" height="120"/>
+        <icon src="res/mo-icon/res/icon/ios/icon-small-50.png" width="50" height="50"/>
+        <icon src="res/mo-icon/res/icon/ios/icon-small-50@2x.png" width="100" height="100"/>
+        <icon src="res/mo-icon/res/icon/ios/icon.png" width="57" height="57"/>
+        <icon src="res/mo-icon/res/icon/ios/icon@2x.png" width="114" height="114"/>
+        <icon src="res/mo-icon/res/icon/ios/icon-60.png" width="60" height="60"/>
+        <icon src="res/mo-icon/res/icon/ios/icon-60@2x.png" width="120" height="120"/>
+        <icon src="res/mo-icon/res/icon/ios/icon-60@3x.png" width="180" height="180"/>
+        <icon src="res/mo-icon/res/icon/ios/icon-72.png" width="72" height="72"/>
+        <icon src="res/mo-icon/res/icon/ios/icon-72@2x.png" width="144" height="144"/>
+        <icon src="res/mo-icon/res/icon/ios/icon-76.png" width="76" height="76"/>
+        <icon src="res/mo-icon/res/icon/ios/icon-76@2x.png" width="152" height="152"/>
+        <icon src="res/mo-icon/res/icon/ios/icon-167.png" width="167" height="167"/>
+        <icon src="res/mo-icon/res/icon/ios/icon-83.5@2x.png" width="167" height="167"/>
     </platform>
     <preference name="phonegap-version" value="cli-7.1.0" />
     <engine name="android" spec="^4.1.1" />
