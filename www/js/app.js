@@ -100,32 +100,52 @@ $$('#my-login-screen .login-button').on('click', function () {
   var password = $$('#my-login-screen [name="password"]').val();
   var formData = app.form.convertToData('#login-form');
   setTimeout(function () {
-    app.request.post('http://khojati.id/titip/api/auth.php', formData, 
-      function(response){
-        $$('.progressbar-infinite').hide();
 
-        output = JSON.parse(response);
+    // app.request.post('http://khojati.id/titip/api/auth.php', formData, 
+    //   function(response){
+    //     $$('.progressbar-infinite').hide();
 
-        if(output.status=='success'){
+    //     output = JSON.parse(response);
 
-          localStorage.uid = output.data.uid;
-          localStorage.key = output.data.key;
-          localStorage.user = JSON.stringify(output.user);
-          app.loginScreen.close('#my-login-screen');
-          app.dialog.alert('Selamat Datang '+output.user.firstname, 'Welcome');
-          homeView.router.back({ url: '/',force: true	});
+    //     if(output.status=='success'){
 
-        }else{
-          app.dialog.alert('username atau password salah', 'Error Input');
-        }
+    //       localStorage.uid = output.data.uid;
+    //       localStorage.key = output.data.key;
+    //       localStorage.user = JSON.stringify(output.user);
+    //       app.loginScreen.close('#my-login-screen');
+    //       app.dialog.alert('Selamat Datang '+output.user.firstname, 'Welcome');
+    //       homeView.router.back({ url: '/',force: true	});
+
+    //     }else{
+    //       app.dialog.alert('username atau password salah', 'Error Input');
+    //     }
+    //   },
+    //   function(xhr, status){
+    //     $$('.progressbar-infinite').hide();
+    //     app.dialog.alert('Error XHR', 'Error');
+    //     console.error('Error: '+JSON.stringify(xhr));
+    //     console.error('ErrorStatus: '+JSON.stringify(status));
+    //   }
+    //   );
+
+    app.request({
+      url: 'http://localhost/apix/v2/api.php/records/users',
+      method:'POST',
+      data: formData,
+      headers: {
+        'Authorization': 'Basic YmlzbWlsbGFoOnBhc3N3b3JkMQ=='
       },
-      function(xhr, status){
-        $$('.progressbar-infinite').hide();
-        app.dialog.alert('Error XHR', 'Error');
-        console.error('Error: '+JSON.stringify(xhr));
-        console.error('ErrorStatus: '+JSON.stringify(status));
-      }
-      );
+      success: function (data, status, xhr) {
+        console.log(data);
+
+      },
+      complete: function (xhr, status) {
+
+      },
+    });
+
+
+
   },      1000);
 });
 
